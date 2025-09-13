@@ -197,7 +197,7 @@ DrawPixel :: proc(
 
     zIndex := SCREEN_WIDTH*iy + ix
     if (depth < zBuffer[zIndex]) {
-        rl.DrawPixel(i32(x), i32(y), color)
+        rl.DrawPixel(ix, iy, color)
         zBuffer[zIndex] = depth
     }
 }
