@@ -7,7 +7,7 @@ main :: proc() {
 
     mesh := MakeCube()
     camera := MakeCamera({0.0, 0.0, -3.0}, {0.0, 0.0, -1.0})
-    light := MakeLight({0.0, 0.0, -3.0}, {0.0, 1.0, 0.0}, 1.0)
+    light := MakeLight({0.0, 1.0, 0.0}, 1.0)
     zBuffer := new(ZBuffer)
 
     translation := Vector3{0.0, 0.0, 0.0}
