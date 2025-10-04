@@ -154,9 +154,7 @@ DrawFlatShaded :: proc(
             continue
         }
 
-        intensity := Vector3DotProduct(crossNorm, light.direction)
-        intensity = math.clamp(intensity, 0.0, 1.0)
-        intensity = math.clamp(ambient + intensity * light.strength, 0.0, 1.0)
+        intensity := math.clamp(Vector3DotProduct(crossNorm, light.direction), ambient, 1.0)
 
         shadedColor := rl.Color{
             u8(f32(color.r) * intensity),
