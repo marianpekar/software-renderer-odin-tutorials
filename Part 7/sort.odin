@@ -1,7 +1,7 @@
 package main
 
 Sort :: proc {
-    SortPoints
+    SortPoints,
 }
 
 SortPoints :: proc(p1, p2, p3: ^Vector3) {
