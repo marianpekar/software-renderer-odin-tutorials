@@ -420,8 +420,9 @@ DrawTexelFlatShaded :: proc(
         interpU := ((uv1.x*p1.z)*alpha + (uv2.x*p2.z)*beta + (uv3.x*p3.z)*gamma) * depth
         interpV := ((uv1.y*p1.z)*alpha + (uv2.y*p2.z)*beta + (uv3.y*p3.z)*gamma) * depth
 
-        texX := i32(interpU * f32(texture.width )) & (texture.width  - 1)
-        texY := i32(interpV * f32(texture.height)) & (texture.height - 1)
+        texX := i32(interpU * f32(texture.width )) % texture.width
+        texY := i32(interpV * f32(texture.height)) % texture.height
+
         tex  := texture.pixels[texY*texture.width + texX]
     
         shadedTex := rl.Color{
