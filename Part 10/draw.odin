@@ -573,11 +573,9 @@ DrawPixelPhongShaded :: proc(
         interpNormal := Vector3Normalize(n1^ * alpha + n2^ * beta + n3^ * gamma)
         interpPos    := ((v1^*p1.z) * alpha + (v2^*p2.z) * beta + (v3^*p3.z) * gamma) * depth
 
-        intensity := ambient
-        lightVec := Vector3Normalize(light.position - interpPos)
-        diffuse  := math.max(Vector3DotProduct(interpNormal, lightVec), 0.0)
-        intensity += diffuse * light.strength
-        intensity = math.min(intensity, 1.0)
+        rayDir    := Vector3Normalize(light.position - interpPos)
+        intensity := Vector3DotProduct(interpNormal, rayDir) * light.strength
+        intensity = math.clamp(intensity, ambient, 1.0)
 
         shadedColor := rl.Color{
             u8(f32(color.r) * intensity),
@@ -740,13 +738,13 @@ DrawTexelPhongShaded :: proc(
         interpPos := ((v1^*p1.z)*alpha + (v2^*p2.z)*beta + (v3^*p3.z)*gamma) * depth
         interpNormal := Vector3Normalize(n1^*alpha + n2^*beta + n3^*gamma)
 
+        rayDir    := Vector3Normalize(light.position - interpPos)
+        intensity := Vector3DotProduct(interpNormal, rayDir) * light.strength
+        intensity = math.clamp(intensity, ambient, 1.0)
+
         texX := i32(interpU * f32(texture.width )) & (texture.width  - 1)
         texY := i32(interpV * f32(texture.height)) & (texture.height - 1)
         tex  := texture.pixels[texY*texture.width + texX]
-
-        lightVec     := Vector3Normalize(light.position - interpPos)
-        diffuse      := math.max(Vector3DotProduct(interpNormal, lightVec), 0.0)
-        intensity    := math.clamp(diffuse * light.strength, ambient, 1.0)
 
         shadedTex := rl.Color{
             u8(f32(tex.r) * intensity),
