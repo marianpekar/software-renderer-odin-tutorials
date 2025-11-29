@@ -732,15 +732,15 @@ DrawTexelPhongShaded :: proc(
 
     zIndex := SCREEN_WIDTH*iy + ix
     if depth <= zBuffer[zIndex] {
-        interpU := ((uv1.x*p1.z)*alpha + (uv2.x*p2.z)*beta + (uv3.x*p3.z)*gamma) * depth
-        interpV := ((uv1.y*p1.z)*alpha + (uv2.y*p2.z)*beta + (uv3.y*p3.z)*gamma) * depth
-
-        interpPos := ((v1^*p1.z)*alpha + (v2^*p2.z)*beta + (v3^*p3.z)*gamma) * depth
         interpNormal := Vector3Normalize(n1^*alpha + n2^*beta + n3^*gamma)
+        interpPos := ((v1^*p1.z)*alpha + (v2^*p2.z)*beta + (v3^*p3.z)*gamma) * depth
 
         rayDir    := Vector3Normalize(light.position - interpPos)
         intensity := Vector3DotProduct(interpNormal, rayDir) * light.strength
         intensity = math.clamp(intensity, ambient, 1.0)
+
+        interpU := ((uv1.x*p1.z)*alpha + (uv2.x*p2.z)*beta + (uv3.x*p3.z)*gamma) * depth
+        interpV := ((uv1.y*p1.z)*alpha + (uv2.y*p2.z)*beta + (uv3.y*p3.z)*gamma) * depth
 
         texX := i32(interpU * f32(texture.width )) & (texture.width  - 1)
         texY := i32(interpV * f32(texture.height)) & (texture.height - 1)
