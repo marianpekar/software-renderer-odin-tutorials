@@ -33,7 +33,13 @@ main :: proc() {
 
     for !rl.WindowShouldClose() {
         deltaTime := rl.GetFrameTime()
+
         HandleInputs(&translation, &rotation, &scale, &renderMode, renderModesCount, &projectionType, deltaTime)
+
+        switch projectionType {
+            case .Perspective: projectionMatrix = perspectiveMatrix
+            case .Orthographic: projectionMatrix = orthographicMatrix
+        }
 
         translationMatrix := MakeTranslationMatrix(translation.x, translation.y, translation.z)
         rotationMatrix    := MakeRotationMatrix(rotation.x, rotation.y, rotation.z)
@@ -41,11 +47,6 @@ main :: proc() {
         modelMatrix       := Mat4Mul(translationMatrix, Mat4Mul(rotationMatrix, scaleMatrix))
         viewMatrix        := MakeViewMatrix(camera.position, camera.target)
         viewMatrix         = Mat4Mul(viewMatrix, modelMatrix)
-        
-        switch projectionType {
-            case .Perspective: projectionMatrix = perspectiveMatrix
-            case .Orthographic: projectionMatrix = orthographicMatrix
-        }
 
         ApplyTransformations(&mesh.transformedVertices, mesh.vertices, viewMatrix)
         ApplyTransformations(&mesh.transformedNormals, mesh.normals, viewMatrix)
