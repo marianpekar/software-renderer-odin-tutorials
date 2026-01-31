@@ -26,14 +26,14 @@ main :: proc() {
     renderImage := rl.GenImageColor(SCREEN_WIDTH, SCREEN_HEIGHT, rl.LIGHTGRAY)
     renderTexture := rl.LoadTextureFromImage(renderImage)
 
-    projMatrix : Matrix4x4
-    projType : ProjectionType = .Perspective
-    perspMatrix := MakePerspectiveMatrix(FOV, SCREEN_WIDTH, SCREEN_HEIGHT, NEAR_PLANE, FAR_PLANE)
-    orthoMatrix := MakeOrthographicMatrix(SCREEN_WIDTH, SCREEN_HEIGHT, NEAR_PLANE, FAR_PLANE)
+    projectionMatrix : Matrix4x4
+    projectionType : ProjectionType = .Perspective
+    perspectiveMatrix := MakePerspectiveMatrix(FOV, SCREEN_WIDTH, SCREEN_HEIGHT, NEAR_PLANE, FAR_PLANE)
+    orthographicMatrix := MakeOrthographicMatrix(SCREEN_WIDTH, SCREEN_HEIGHT, NEAR_PLANE, FAR_PLANE)
 
     for !rl.WindowShouldClose() {
         deltaTime := rl.GetFrameTime()
-        HandleInputs(&translation, &rotation, &scale, &renderMode, renderModesCount, &projType, deltaTime)
+        HandleInputs(&translation, &rotation, &scale, &renderMode, renderModesCount, &projectionType, deltaTime)
 
         translationMatrix := MakeTranslationMatrix(translation.x, translation.y, translation.z)
         rotationMatrix    := MakeRotationMatrix(rotation.x, rotation.y, rotation.z)
@@ -42,9 +42,9 @@ main :: proc() {
         viewMatrix        := MakeViewMatrix(camera.position, camera.target)
         viewMatrix         = Mat4Mul(viewMatrix, modelMatrix)
         
-        switch projType {
-            case .Perspective: projMatrix = perspMatrix
-            case .Orthographic: projMatrix = orthoMatrix
+        switch projectionType {
+            case .Perspective: projectionMatrix = perspectiveMatrix
+            case .Orthographic: projectionMatrix = orthographicMatrix
         }
 
         ApplyTransformations(&mesh.transformedVertices, mesh.vertices, viewMatrix)
@@ -55,14 +55,14 @@ main :: proc() {
         ClearZBuffer(zBuffer)
         
         switch renderMode {
-            case 0: DrawWireframe(mesh.transformedVertices, mesh.triangles, projMatrix, projType, rl.GREEN, false, &renderImage)
-            case 1: DrawWireframe(mesh.transformedVertices, mesh.triangles, projMatrix, projType, rl.GREEN, true, &renderImage)
-            case 2: DrawUnlit(mesh.transformedVertices, mesh.triangles, projMatrix, projType, rl.WHITE, zBuffer, &renderImage)
-            case 3: DrawFlatShaded(mesh.transformedVertices, mesh.triangles, projMatrix, projType, light, rl.WHITE, zBuffer, &renderImage)
-            case 4: DrawPhongShaded(mesh.transformedVertices, mesh.triangles, mesh.transformedNormals, light, rl.WHITE, zBuffer, projMatrix, projType, &renderImage)
-            case 5: DrawTexturedUnlit(mesh.transformedVertices, mesh.triangles, mesh.uvs, texture, zBuffer, projMatrix, projType, &renderImage)
-            case 6: DrawTexturedFlatShaded(mesh.transformedVertices, mesh.triangles, mesh.uvs, light, texture, zBuffer, projMatrix, projType, &renderImage)
-            case 7: DrawTexturedPhongShaded(mesh.transformedVertices, mesh.triangles, mesh.uvs, mesh.transformedNormals, light, texture, zBuffer, projMatrix, projType, &renderImage)
+            case 0: DrawWireframe(mesh.transformedVertices, mesh.triangles, projectionMatrix, projectionType, rl.GREEN, false, &renderImage)
+            case 1: DrawWireframe(mesh.transformedVertices, mesh.triangles, projectionMatrix, projectionType, rl.GREEN, true, &renderImage)
+            case 2: DrawUnlit(mesh.transformedVertices, mesh.triangles, projectionMatrix, projectionType, rl.WHITE, zBuffer, &renderImage)
+            case 3: DrawFlatShaded(mesh.transformedVertices, mesh.triangles, projectionMatrix, projectionType, light, rl.WHITE, zBuffer, &renderImage)
+            case 4: DrawPhongShaded(mesh.transformedVertices, mesh.triangles, mesh.transformedNormals, light, rl.WHITE, zBuffer, projectionMatrix, projectionType, &renderImage)
+            case 5: DrawTexturedUnlit(mesh.transformedVertices, mesh.triangles, mesh.uvs, texture, zBuffer, projectionMatrix, projectionType, &renderImage)
+            case 6: DrawTexturedFlatShaded(mesh.transformedVertices, mesh.triangles, mesh.uvs, light, texture, zBuffer, projectionMatrix, projectionType, &renderImage)
+            case 7: DrawTexturedPhongShaded(mesh.transformedVertices, mesh.triangles, mesh.uvs, mesh.transformedNormals, light, texture, zBuffer, projectionMatrix, projectionType, &renderImage)
         }
 
         rl.UpdateTexture(renderTexture, renderImage.data)
