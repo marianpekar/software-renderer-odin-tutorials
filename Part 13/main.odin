@@ -14,8 +14,9 @@ main :: proc() {
     texture := LoadTextureFromFile("assets/uv_checker.png")
     camera := MakeCamera({0.0, 0.0, -3.0}, {0.0, 0.0, -1.0})
 
-    red_light  := MakeLight({-4.0,  0.0, -3.0}, { 1.0,  1.0, 0.0}, {1.0, 0.0, 0.0, 1.0})
-    green_light := MakeLight({ 4.0,  0.0, -3.0}, {-1.0, -1.0, 0.0}, {0.0, 1.0, 0.0, 1.0})
+    viewMatrix := MakeViewMatrix(camera.position, camera.target)
+    red_light := MakeLight({-4.0, 0.0, 0.0}, { 1.0,  1.0, 0.0}, {1.0, 0.0, 0.0, 1.0}, viewMatrix)
+    green_light := MakeLight({ 4.0, 0.0, 0.0}, {-1.0, -1.0, 0.0}, {0.0, 1.0, 0.0, 1.0}, viewMatrix)
     lights := []Light{red_light, green_light}
 
     ambient := Vector3{0.2, 0.2, 0.2}

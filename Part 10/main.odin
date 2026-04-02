@@ -8,7 +8,8 @@ main :: proc() {
     mesh := LoadMeshFromObjFile("assets/monkey.obj")
     texture := LoadTextureFromFile("assets/uv_checker.png")
     camera := MakeCamera({0.0, 0.0, -3.0}, {0.0, 0.0, -1.0})
-    light := MakeLight({0.0, 0.0, -3.0}, {0.0, 1.0, 0.0}, 1.0)
+    viewMatrix := MakeViewMatrix(camera.position, camera.target)
+    light := MakeLight({0.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, 1.0, viewMatrix)
     zBuffer := new(ZBuffer)
 
     translation := Vector3{0.0, 0.0, 0.0}
